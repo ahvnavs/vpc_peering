@@ -23,7 +23,6 @@ variable "tags" {
         "env" = "local_host"
         "project" = "vpc_peering"
         "cloud" = "aws"
-        "region" ="mumbai"
     }
 }
 

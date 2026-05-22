@@ -1,19 +1,19 @@
 data "aws_ami" "ami01"{
-    region = var.vpc01_region
+    provider = aws.east
     most_recent = true
     owners = ["amazon"]
     filter {
         name = "name"
-        values = []
+        values = ["al2023-ami-2023.*-x86_64"]
     }
 }
 
 data "aws_ami" "ami02" {
-    region = var.vpc02_region
+    provider = aws.west
     most_recent = true
     owners = ["amazon"]
     filter {
         name = "name"
-        values = []
+        values = ["al2023-ami-2023.*-x86_64"]
     }
 }
