@@ -60,6 +60,7 @@ resource "aws_instance" "ec201" {
     subnet_id = aws_subnet.sub01.id
     instance_type = var.instance_type
     availability_zone = var.az01[0]
+    vpc_security_group_ids = [aws_security_group.sg01.id]
 }
 
 resource "aws_instance" "ec202" {
@@ -70,6 +71,45 @@ resource "aws_instance" "ec202" {
     subnet_id = aws_subnet.sub02.id
     instance_type = var.instance_type
     availability_zone = var.az02[0]
+    vpc_security_group_ids = [aws_security_group.sg02.id]
+}
+
+resource "aws_security_group" "sg01" {
+    provider = aws.east
+    region = var.vpc01_region
+    tags = var.tags
+    vpc_id = aws_vpc.vpc01.id
+    ingress {
+        from_port = 8
+        to_port = 0
+        protocol = "icmp"
+        cidr_blocks = [aws_vpc.vpc02.cidr_block]
+    }
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+}
+
+resource "aws_security_group" "sg02" {
+    provider = aws.west
+    region = var.vpc02_region
+    tags = var.tags
+    vpc_id = aws_vpc.vpc02.id
+    ingress {
+        from_port = 8
+        to_port = 0
+        protocol = "icmp"
+        cidr_blocks = [aws_vpc.vpc01.cidr_block]
+    }
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
 }
 
 resource "aws_vpc_peering_connection" "peer_connect" {
